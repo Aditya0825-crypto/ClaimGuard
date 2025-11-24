@@ -10,6 +10,7 @@ import PasswordStrengthIndicator from "@/components/PasswordStrengthIndicator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { FirebaseError } from "firebase/app";
 import {
   Form,
   FormControl,
@@ -50,9 +51,10 @@ const signupSchema = z
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { login } = useAuth();
+  const { signup, signInWithGoogle } = useAuth();
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -68,16 +70,53 @@ const Signup = () => {
 
   const handleSubmit = async (values: z.infer<typeof signupSchema>) => {
     setIsLoading(true);
-
-    setTimeout(() => {
-      login(values.email, values.fullName);
+    try {
+      await signup(values.fullName, values.email, values.password);
       toast({
         title: "Account created!",
         description: "Welcome to claimGuard. Let's get started.",
       });
       navigate("/dashboard");
+    } catch (error) {
+      const friendlyMessage =
+        error instanceof FirebaseError
+          ? error.code === "auth/email-already-in-use"
+            ? "An account already exists for this email."
+            : error.message
+          : "Something went wrong. Please try again.";
+
+      toast({
+        title: "Unable to sign up",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+      toast({
+        title: "Account ready!",
+        description: "Signed in with Google successfully.",
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      const friendlyMessage =
+        error instanceof FirebaseError
+          ? error.message
+          : "Unable to continue with Google. Please try again.";
+      toast({
+        title: "Google sign-up failed",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   return (
@@ -188,6 +227,23 @@ const Signup = () => {
                 </Button>
               </form>
             </Form>
+
+            <div className="mt-6">
+              <div className="flex items-center gap-3 text-xs uppercase text-muted-foreground">
+                <span className="flex-1 border-t border-border" />
+                or
+                <span className="flex-1 border-t border-border" />
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-11 text-base mt-4"
+                onClick={handleGoogleSignup}
+                disabled={isGoogleLoading}
+              >
+                {isGoogleLoading ? "Connecting..." : "Continue with Google"}
+              </Button>
+            </div>
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Already have an account? </span>

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { FirebaseError } from "firebase/app";
 import {
   Form,
   FormControl,
@@ -32,9 +32,10 @@ const loginSchema = z.object({
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { login } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -46,16 +47,54 @@ const Login = () => {
 
   const handleSubmit = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
-
-    setTimeout(() => {
-      login(values.email, "John Doe");
+    try {
+      await login(values.email, values.password);
       toast({
         title: "Welcome back!",
         description: "Successfully logged in to your account.",
       });
       navigate("/dashboard");
+    } catch (error) {
+      const friendlyMessage =
+        error instanceof FirebaseError
+          ? error.code === "auth/invalid-credential"
+            ? "The email or password is incorrect."
+            : error.message
+          : "Something went wrong. Please try again.";
+
+      toast({
+        title: "Unable to sign in",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+      toast({
+        title: "Welcome back!",
+        description: "Signed in with Google successfully.",
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      const friendlyMessage =
+        error instanceof FirebaseError
+          ? error.message
+          : "Unable to sign in with Google. Please try again.";
+
+      toast({
+        title: "Google sign-in failed",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   return (
@@ -134,6 +173,23 @@ const Login = () => {
                 </Button>
               </form>
             </Form>
+
+            <div className="mt-6">
+              <div className="flex items-center gap-3 text-xs uppercase text-muted-foreground">
+                <span className="flex-1 border-t border-border" />
+                or
+                <span className="flex-1 border-t border-border" />
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-11 text-base mt-4"
+                onClick={handleGoogleSignIn}
+                disabled={isGoogleLoading}
+              >
+                {isGoogleLoading ? "Connecting..." : "Continue with Google"}
+              </Button>
+            </div>
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Don't have an account? </span>

@@ -6,26 +6,41 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { FirebaseError } from "firebase/app";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
+  const { resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Simulate sending reset email
-    setTimeout(() => {
+    try {
+      await resetPassword(email);
       setIsSubmitted(true);
       toast({
         title: "Email sent!",
         description: "Check your inbox for password reset instructions.",
       });
+    } catch (error) {
+      const friendlyMessage =
+        error instanceof FirebaseError
+          ? error.code === "auth/user-not-found"
+            ? "No account is registered with this email."
+            : error.message
+          : "Unable to send reset email. Please try again.";
+      toast({
+        title: "Unable to send email",
+        description: friendlyMessage,
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

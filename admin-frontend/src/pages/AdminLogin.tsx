@@ -1,20 +1,29 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Shield, Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Shield, Eye, EyeOff, CheckCircle2, XCircle, Chrome } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { loginWithEmail, loginWithGoogle, initializing, user } = useAuth();
+
+  useEffect(() => {
+    if (!initializing && user) {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [initializing, navigate, user]);
 
   // Password strength calculator
   const calculatePasswordStrength = (pass: string) => {
@@ -52,27 +61,69 @@ export default function AdminLogin() {
     return "Strong";
   };
 
+  const getFirebaseErrorMessage = (error: unknown) => {
+    if (typeof error === "object" && error && "code" in error) {
+      const { code } = error as { code?: string };
+      switch (code) {
+        case "auth/invalid-credential":
+        case "auth/invalid-email":
+          return "Email or password is incorrect.";
+        case "auth/user-disabled":
+          return "This account has been disabled.";
+        case "auth/user-not-found":
+          return "No user found with this email.";
+        case "auth/wrong-password":
+          return "Email or password is incorrect.";
+        case "auth/popup-closed-by-user":
+          return "Google sign in was cancelled.";
+        default:
+          return "Something went wrong. Please try again.";
+      }
+    }
+    return "Unable to complete the request. Please try again.";
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
     setIsLoading(true);
-
-    // TODO: Implement actual authentication
-    setTimeout(() => {
-      if (email && password) {
-        toast({
-          title: "Login Successful",
-          description: "Welcome to ClaimGuard Admin Portal",
-        });
-        navigate("/admin/dashboard");
-      } else {
-        toast({
-          title: "Login Failed",
-          description: "Please enter valid credentials",
-          variant: "destructive",
-        });
-      }
+    try {
+      await loginWithEmail(email, password);
+      toast({
+        title: "Login successful",
+        description: "Welcome to ClaimGuard Admin Portal",
+      });
+      navigate("/admin/dashboard", { replace: true });
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: getFirebaseErrorMessage(error),
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (isGoogleLoading) return;
+    setIsGoogleLoading(true);
+    try {
+      await loginWithGoogle();
+      toast({
+        title: "Signed in with Google",
+        description: "Welcome back!",
+      });
+      navigate("/admin/dashboard", { replace: true });
+    } catch (error) {
+      toast({
+        title: "Google sign in failed",
+        description: getFirebaseErrorMessage(error),
+        variant: "destructive",
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   return (
@@ -189,6 +240,25 @@ export default function AdminLogin() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
+            <div className="relative py-2 text-center text-xs text-muted-foreground">
+              <span className="bg-card px-2">or</span>
+            </div>
+            <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isGoogleLoading}>
+              {isGoogleLoading ? (
+                "Connecting to Google..."
+              ) : (
+                <>
+                  <Chrome className="mr-2 h-4 w-4" />
+                  Continue with Google
+                </>
+              )}
+            </Button>
+            <div className="text-center text-sm text-muted-foreground">
+              Need an account?{" "}
+              <Link to="/admin/signup" className="text-primary hover:underline">
+                Create one
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>

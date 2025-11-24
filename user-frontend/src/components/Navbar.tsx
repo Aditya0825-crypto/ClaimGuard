@@ -20,17 +20,28 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { logout, user } = useAuth();
   const { toast } = useToast();
+  const displayName = user?.displayName || user?.email || "User";
+  const emailLabel = user?.email || "";
 
   const isActive = (path: string) => location.pathname === path;
 
-  const handleLogout = () => {
-    logout();
-    setMobileMenuOpen(false);
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+      navigate("/");
+    } catch {
+      toast({
+        title: "Logout failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setMobileMenuOpen(false);
+    }
   };
 
   const handleNavClick = (path: string) => {
@@ -90,14 +101,14 @@ const Navbar = () => {
                   <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center">
                     <User className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-sm font-medium">{user?.name || "User"}</span>
+                  <span className="text-sm font-medium">{displayName}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col">
-                    <span className="font-semibold">{user?.name || "User"}</span>
-                    <span className="text-xs text-muted-foreground font-normal">{user?.email || ""}</span>
+                    <span className="font-semibold">{displayName}</span>
+                    <span className="text-xs text-muted-foreground font-normal">{emailLabel}</span>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -135,8 +146,8 @@ const Navbar = () => {
                       <User className="h-6 w-6 text-white" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-semibold text-foreground">{user?.name || "User"}</span>
-                      <span className="text-xs text-muted-foreground">{user?.email || ""}</span>
+                      <span className="font-semibold text-foreground">{displayName}</span>
+                      <span className="text-xs text-muted-foreground">{emailLabel}</span>
                     </div>
                   </div>
                   

@@ -16,7 +16,16 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isInitializing } = useAuth();
+
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-muted-foreground">
+        Checking authentication&hellip;
+      </div>
+    );
+  }
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 

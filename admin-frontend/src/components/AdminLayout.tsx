@@ -10,15 +10,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log("Logout clicked");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { logout, user } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Signed out",
+        description: "You have been logged out of the admin portal.",
+      });
+      navigate("/admin/login", { replace: true });
+    } catch (error) {
+      toast({
+        title: "Unable to logout",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -40,7 +59,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Admin Account</DropdownMenuLabel>
+                <DropdownMenuLabel>{user?.displayName || user?.email || "Admin Account"}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <User className="mr-2 h-4 w-4" />
