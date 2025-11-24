@@ -1,131 +1,121 @@
-ClaimGuard is a full-stack MERN application designed to simplify and secure insurance claim management.
-It provides two separate interfaces:
+🚀 ClaimGuard – Smart Insurance Fraud Detection & Claim Management
 
-🎯 User Portal – File and track claims effortlessly
+ClaimGuard is an intelligent dual-portal system enabling seamless communication between insurance users and admins, backed by a secure and scalable Node.js API.
 
-🛡️ Admin Portal – Manage, verify, and approve claims
+✨ Key Features
+🔐 Authentication & Security
 
-⚙️ Common Backend – Secure API powering both portals
+JWT-based authentication
 
-ClaimGuard is designed for organizations, insurance providers, and digital platforms that want a fast, reliable, and transparent claim workflow.
+Secure password hashing with bcrypt
 
-✨ Features
-🔹 User Portal
+Role-based access system
 
-File new claims with document uploads
+📄 Claim Management
 
-Real-time claim status tracking
+Submit claims with documents
 
-Secure login/signup
+Track claim progress
 
-View claim history
+Admin review dashboard
 
-Receive notifications
+Approval / rejection workflows
 
-🔹 Admin Portal
+🤖 Smart & Automated
 
-Verify submitted claims
+Duplicate claim detection
 
-Approve / Reject claims
+Auto-verification checks
 
-Manage users
+Modular, maintainable architecture
 
-Dashboard for analytics
-
-Role-based secure access
-
-🔹 Backend API
-
-JWT authentication
-
-Mongoose-based models
-
-Claim verification workflows
-
-Secure password hashing
-
-Modular service-controller setup
-
-📁 Project Structure (Monorepo)
+🏗️ Project Structure (Monorepo)
 ClaimGuard/
 │
-├── admin-frontend/      # Admin portal (React)
-├── user-frontend/       # User portal (React)
-└── backend/             # Common backend (Node + Express + MongoDB)
+├── admin-frontend/      # 🛠️ Admin portal (React + Tailwind)
+│
+├── user-frontend/       # 🧑‍💼 User portal (React + Tailwind)
+│
+└── backend/             # 🔧 Common backend API (Node.js + Express + MongoDB)
     ├── src/
-    │   ├── config/
-    │   ├── controllers/
-    │   ├── middleware/
-    │   ├── models/
-    │   ├── routes/
-    │   ├── services/
-    │   ├── utils/
-    │   ├── app.js
-    │   └── server.js
+    ├── server.js
     ├── package.json
     └── .env
 
-⚙️ Tech Stack
+🖥️ Frontend Overview
+🎨 User Portal
+Feature	Description
+🧾 Claim Submission	Users can file claims with documents
+📊 Dashboard	View status & updates
+🔄 Status Tracking	Real-time claim progress
+👤 Profile Management	Edit and manage user info
+🛡️ Admin Portal
+Feature	Description
+📁 Claim Review	View, approve, reject claims
+🧩 Verification Tools	Detect inconsistencies & fraud
+📊 Analytics Dashboard	Overview of active & resolved claims
+👨‍💼 User Oversight	Manage registered users
+🔧 Backend Overview 
 
-Frontend: React + Tailwind
+The backend is built using Node.js, Express, and MongoDB, designed with a clean modular structure for scalability.
 
-Backend: Node.js, Express.js
+🌐 What it handles
 
-Database: MongoDB + Mongoose
+Authentication (JWT + bcrypt)
 
-Auth: JWT, bcrypt
+Claim creation, updates, & verification logic
 
-Tools: Git, VS Code
+File/document management
 
-🚀 Running the Project
+Secure API routing
+
+Structured models for Users & Claims
+
+The backend is shared by both portals, ensuring consistent data flow and unified claim handling.
+
+🛠️ Tech Stack
+🌐 Frontend
+
+React
+
+TailwindCSS
+
+Axios
+
+React Router
+
+🖥️ Backend
+
+Node.js
+
+Express.js
+
+MongoDB + Mongoose
+
+JWT Authentication
+
+🚀 Setup Instructions
 1️⃣ Clone the repository
-git clone https://github.com/<your-username>/ClaimGuard.git
+git clone https://github.com/Aditya0825-crypto/ClaimGuard
 cd ClaimGuard
 
 2️⃣ Install dependencies
-Backend
-cd backend
-npm install
-
-Frontends
-cd ../admin-frontend && npm install
+cd backend && npm install
 cd ../user-frontend && npm install
+cd ../admin-frontend && npm install
 
-3️⃣ Setup Environment
-
-Create .env inside backend:
-
-PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret_key
-
-4️⃣ Start Development Servers
-Backend:
+3️⃣ Start the backend
+cd backend
 npm run dev
 
-User Frontend:
-npm start
-
-Admin Frontend:
-npm start
-
-🏆 Why ClaimGuard? (USP)
-
-🔒 Highly secure with JWT, role-based access & hashing
-
-📡 Real-time updates across portals
-
-🧩 Modular architecture for easy scaling
-
-⚡ Fast API optimized for claim workflows
-
-🎯 User-friendly UI for both customers and admins
+4️⃣ Start the frontends
+cd user-frontend   → npm start
+cd admin-frontend  → npm start
 
 🤝 Contributing
 
-Pull requests are welcome!
-Please follow conventional commit messages & create a feature branch before submitting.
+Pull requests and feature suggestions are always welcome!
 
 📜 License
 
-This project is licensed under the MIT License.
+MIT License — Free for personal & commercial use.
