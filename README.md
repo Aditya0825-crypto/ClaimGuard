@@ -29,18 +29,6 @@ Auto-verification checks
 
 Modular, maintainable architecture
 
-🏗️ Project Structure (Monorepo)
-ClaimGuard/
-│
-├── admin-frontend/      # 🛠️ Admin portal (React + Tailwind)
-│
-├── user-frontend/       # 🧑‍💼 User portal (React + Tailwind)
-│
-└── backend/             # 🔧 Common backend API (Node.js + Express + MongoDB)
-    ├── src/
-    ├── server.js
-    ├── package.json
-    └── .env
 
 🖥️ Frontend Overview
 🎨 User Portal
