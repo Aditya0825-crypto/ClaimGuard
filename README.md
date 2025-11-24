@@ -32,17 +32,28 @@ Modular, maintainable architecture
 
 🖥️ Frontend Overview
 🎨 User Portal
+
 Feature	Description
+
 🧾 Claim Submission	Users can file claims with documents
+
 📊 Dashboard	View status & updates
+
 🔄 Status Tracking	Real-time claim progress
+
 👤 Profile Management	Edit and manage user info
+
 🛡️ Admin Portal
 Feature	Description
+
 📁 Claim Review	View, approve, reject claims
+
 🧩 Verification Tools	Detect inconsistencies & fraud
+
 📊 Analytics Dashboard	Overview of active & resolved claims
+
 👨‍💼 User Oversight	Manage registered users
+
 🔧 Backend Overview 
 
 The backend is built using Node.js, Express, and MongoDB, designed with a clean modular structure for scalability.
@@ -83,20 +94,25 @@ MongoDB + Mongoose
 JWT Authentication
 
 🚀 Setup Instructions
+
 1️⃣ Clone the repository
+
 git clone https://github.com/Aditya0825-crypto/ClaimGuard
 cd ClaimGuard
 
 2️⃣ Install dependencies
+
 cd backend && npm install
 cd ../user-frontend && npm install
 cd ../admin-frontend && npm install
 
 3️⃣ Start the backend
+
 cd backend
 npm run dev
 
 4️⃣ Start the frontends
+
 cd user-frontend   → npm start
 cd admin-frontend  → npm start
 
