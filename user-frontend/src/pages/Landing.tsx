@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, FileCheck, Bell, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
+import LandingHeader from "@/components/LandingHeader";
 
 const Landing = () => {
   const features = [
@@ -38,6 +39,8 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <LandingHeader />
+      
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-60" />
