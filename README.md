@@ -98,22 +98,27 @@ JWT Authentication
 1️⃣ Clone the repository
 
 git clone https://github.com/Aditya0825-crypto/ClaimGuard
+
 cd ClaimGuard
 
 2️⃣ Install dependencies
 
 cd backend && npm install
+
 cd ../user-frontend && npm install
+
 cd ../admin-frontend && npm install
 
 3️⃣ Start the backend
 
 cd backend
+
 npm run dev
 
 4️⃣ Start the frontends
 
 cd user-frontend   → npm start
+
 cd admin-frontend  → npm start
 
 🤝 Contributing
