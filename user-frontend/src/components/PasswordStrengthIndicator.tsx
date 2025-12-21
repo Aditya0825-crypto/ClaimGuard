@@ -7,6 +7,7 @@ interface PasswordStrengthIndicatorProps {
 }
 
 const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicatorProps) => {
+  
   const strength = useMemo(() => {
     if (!password) return { score: 0, label: "", color: "" };
 
