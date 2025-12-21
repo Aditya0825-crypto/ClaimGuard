@@ -19,6 +19,7 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
+  
   const navigate = useNavigate();
   const { toast } = useToast();
   const { logout, user } = useAuth();
