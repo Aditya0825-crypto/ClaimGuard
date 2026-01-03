@@ -10,7 +10,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "@/firebase";
-
 type AuthContextValue = {
   user: User | null;
   initializing: boolean;
